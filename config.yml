@@ -1,0 +1,20 @@
+playerdata:
+
+config:
+   prefix: "&7[smj]&f"
+   world:
+      x: "100"
+      y: "100"
+      z: "100"
+      world: "world"
+   price:
+      diamond_ore: 1 #Only support ores
+      emerald_ore: 1
+      redstone_ore: 1
+      lapiz_ore: 1
+      iron_ore: 1
+      coal_ore: 1
+      quartz_ore: 1
+      gold_ore: 1 
+      nether_gold_ore: 1
+      

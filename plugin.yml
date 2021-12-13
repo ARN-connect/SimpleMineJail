@@ -1,0 +1,31 @@
+main: rubrub07.SimpleMineJail.SimpleMineJail
+version: 0.0.1
+author: rubrub07
+name: SimpleMineJail
+commands:
+  smj:
+    description: SimpleMineJail
+    aliases:
+    - simpleminejail
+    - minejail
+permissions:
+  smj.jail:
+    description: jail
+    default: op
+  smj.setjail:
+    description: jail
+    default: op
+  smj.unjail:
+    description: unjail
+    default: op
+  smj.claim:
+    description: claim
+    default: op
+  smj.*:
+    description: SMJ perms
+    default: op
+    children:
+      smj.jail: true
+      smj.unjail: true
+      smj.claim: true
+      smj.setjail: true
