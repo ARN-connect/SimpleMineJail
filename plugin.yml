@@ -1,6 +1,7 @@
 main: rubrub07.SimpleMineJail.SimpleMineJail
 version: 0.0.1
 author: rubrub07
+api-version: 1.16
 name: SimpleMineJail
 commands:
   smj:
