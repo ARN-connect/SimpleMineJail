@@ -68,74 +68,67 @@ public class SimpleMineJail extends JavaPlugin implements TabExecutor {
 
 		try {
 			if (args[0].equalsIgnoreCase("jail")) {
-				int uwu = 0;
-				for (Player all : Bukkit.getServer().getOnlinePlayers()) {
-					if (args[1].equals(all.getPlayer().getName().toString())) {
-						if (!all.getPlayer().isOp()) {
-							Inventory inv = all.getInventory();
+				if (sender instanceof Player) {	
+					Player sendex = (Player) sender;
+					if(!sendex.hasPermission("smj.jail") || !sendex.hasPermission("*") || !sendex.isOp()) {sendex.sendMessage(prefix("&7No tienes permisos para encarcelar")); return false;}
+					try { 
+						Player player = Bukkit.getPlayer(args[1]);	
+						if (!player.getPlayer().isOp()) {
+							Inventory inv = player.getInventory();
 							try {
-								if (conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + "isjailed") != "true") {
-									conf.set("config.data.playerdata." + all.getPlayer().getName().toString() + ".inventory.inv", itemStackArrayToBase64(inv.getContents()));
-									conf.set("config.data.playerdata." + all.getPlayer().getName().toString() + ".inventory.arm", itemStackArrayToBase64(all.getInventory().getArmorContents()));
-									conf.set("config.data.playerdata." + all.getPlayer().getName().toString() + "isjailed", "true");
+								if (conf.getString("config.data.playerdata." + player.getPlayer().getName().toString() + "isjailed") != "true") {
+									conf.set("config.data.playerdata." + player.getPlayer().getName().toString() + ".inventory.inv", itemStackArrayToBase64(inv.getContents()));
+									conf.set("config.data.playerdata." + player.getPlayer().getName().toString() + ".inventory.arm", itemStackArrayToBase64(player.getInventory().getArmorContents()));
+									conf.set("config.data.playerdata." + player.getPlayer().getName().toString() + "isjailed", "true");
 									saveConfig();
-									all.getInventory().clear();
+									player.getInventory().clear();
 									org.bukkit.World w = Bukkit.getWorld(conf.getString("config.world.world"));
 									Location loc = new Location(w, conf.getDouble("config.world.x"),
 									conf.getDouble("config.world.y"), conf.getDouble("config.world.z"));
-									all.teleport(loc);
-									all.sendMessage(prefix("&7Has sido encarcelado debes trabajar para pagar tu salida"));
-
-									if (sender instanceof Player) {
-										Player sendex = (Player) sender;
-										sendex.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " ah sido encarcelado"));
-									} else {
-										ConsoleCommandSender sendex = Bukkit.getConsoleSender();
-										sendex.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " ah sido encarcelado"));
-									}
-									
+									player.teleport(loc);
+									player.sendMessage(prefix("&7Has sido encarcelado debes trabajar para pagar tu salida"));
+									sendex.sendMessage(prefix("&7El jugador " + player.getName() + " ah sido encarcelado"));
 									for (String s : pricelist) {
-										all.sendMessage(prefix("&7" + s));
+										player.sendMessage(prefix("&7" + s));
 									}
 									return true;
-								}
-							} catch (Exception e) {
-								if (sender instanceof Player) {
-									Player sendex = (Player) sender;
-									sendex.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " ya esta encarcelado"));
-									return true;
-								} else {
-									ConsoleCommandSender sendex = Bukkit.getConsoleSender();
-									sendex.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " ya esta encarcelado"));
+								}else {
+									sendex.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " ya esta encarcelado"));
 									return true;
 								}
-							}
-						} else {
-							if (sender instanceof Player) {
-								Player sendex = (Player) sender;
-								sendex.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no se puede encarcelar"));
-								return true;
-							} else {
-								ConsoleCommandSender sendex = Bukkit.getConsoleSender();
-								sendex.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no se puede encarcelar"));
-								return true;
-							}
-						}
-					} else {
-						uwu++;
-					}
-					break;
-				}
-				if (uwu == Bukkit.getServer().getOnlinePlayers().size()) {
-					if (sender instanceof Player) {
-						Player sendex = (Player) sender;
-						sendex.sendMessage(prefix("&7El jugador " + args[1] + " no existe"));
-						return true;
-					} else {
-						ConsoleCommandSender sendex = Bukkit.getConsoleSender();
-						sendex.sendMessage(prefix("&7El jugador " + args[1] + " no existe"));
-						return true;
-					}
+							} catch (Exception e) {sendex.sendMessage(prefix("&7Ah ocurrido un error : " + e));}
+						} else {sendex.sendMessage(prefix("&7El jugador " + player.getName() + " &7No se puede encarcelar"));}
+					} catch (Exception e) {sendex.sendMessage(prefix("&7Ah ocurrido un error : " + e));}
+				} else {
+					ConsoleCommandSender sendex = Bukkit.getConsoleSender();
+					try { 
+						Player player = Bukkit.getPlayer(args[1]);	
+						if (!player.getPlayer().isOp()) {
+							Inventory inv = player.getInventory();
+							try {
+								if (conf.getString("config.data.playerdata." + player.getPlayer().getName().toString() + "isjailed") != "true") {
+									conf.set("config.data.playerdata." + player.getPlayer().getName().toString() + ".inventory.inv", itemStackArrayToBase64(inv.getContents()));
+									conf.set("config.data.playerdata." + player.getPlayer().getName().toString() + ".inventory.arm", itemStackArrayToBase64(player.getInventory().getArmorContents()));
+									conf.set("config.data.playerdata." + player.getPlayer().getName().toString() + "isjailed", "true");
+									saveConfig();
+									player.getInventory().clear();
+									org.bukkit.World w = Bukkit.getWorld(conf.getString("config.world.world"));
+									Location loc = new Location(w, conf.getDouble("config.world.x"),
+									conf.getDouble("config.world.y"), conf.getDouble("config.world.z"));
+									player.teleport(loc);
+									player.sendMessage(prefix("&7Has sido encarcelado debes trabajar para pagar tu salida"));
+									sendex.sendMessage(prefix("&7El jugador " + player.getName() + " ah sido encarcelado"));
+									for (String s : pricelist) {
+										player.sendMessage(prefix("&7" + s));
+									}
+									return true;
+								}else {
+									sendex.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " ya esta encarcelado"));
+									return true;
+								}
+							} catch (Exception e) {sendex.sendMessage(prefix("&7Ah ocurrido un error : " + e));}
+						} else {sendex.sendMessage(prefix("&7El jugador " + player.getName() + " &7No se puede encarcelar"));}
+					} catch (Exception e) {sendex.sendMessage(prefix("&7Ah ocurrido un error : " + e));}
 				}
 			}
 
@@ -156,242 +149,205 @@ public class SimpleMineJail extends JavaPlugin implements TabExecutor {
 					}
 				} else {
 					ConsoleCommandSender sendex = Bukkit.getConsoleSender();
-					sendex.sendMessage(prefix("&7Solo se puede ejecutar el comando como staff"));
+					sendex.sendMessage(prefix("&7Solo se puede ejecutar el comando como jugador"));
 					return true;
 				}
 			}
 
 			else if (args[0].equalsIgnoreCase("unjail")) {
 				if (sender instanceof Player) {
-					Player sendex = (Player) sender;
-					if (sendex.hasPermission("smj.unjail") || sendex.hasPermission("*") || sendex.isOp()) {
-						int uwu = 0;
-						for (Player all : Bukkit.getServer().getOnlinePlayers()) {
-							if (args[1].equals(all.getPlayer().getName().toString())) {
-								if (conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + "isjailed").equalsIgnoreCase("true")) {
-									conf.set("config.data.playerdata." + all.getPlayer().getName().toString() + "isjailed", "false");
-									String bas64 = conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + ".inventory.inv");
-									String bas642 = conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + ".inventory.arm");
-									ItemStack[] i = itemStackArrayFromBase64(bas64);
-									all.getInventory().setContents(i);
-									ItemStack[] e = itemStackArrayFromBase64(bas642);
-									all.getInventory().setArmorContents(e);
-									all.sendMessage(prefix("&7Has sido liberado"));
-									saveConfig();
-									break;
-								} else {
-									sendex.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no esta encarcelado"));
-									break;
-								}
-							} else {
-								uwu++;
+								Player sendex = (Player) sender;
+								try {
+									Player player = Bukkit.getPlayer(args[1]);
+									if (conf.getString("config.data.playerdata." + player.getName() + ".isjailed").equalsIgnoreCase("true")) {
+										String bas64 = conf.getString("config.data.playerdata." + player.getName() + ".inventory.inv");
+										String bas642 = conf.getString("config.data.playerdata." + player.getName() + ".inventory.arm");
+										ItemStack[] i = itemStackArrayFromBase64(bas64);
+										player.getInventory().setContents(i);
+										ItemStack[] e = itemStackArrayFromBase64(bas642);
+										player.getInventory().setArmorContents(e);
+										player.sendMessage(prefix("&7Has sido liberado"));
+										conf.set("config.data.playerdata." + player.getPlayer().getName().toString() + "isjailed", "false");
+										saveConfig();
+									} else {
+										sendex.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no esta encarcelado"));
+									}
+							}catch(Exception e) {
+								sendex.sendMessage(prefix("&7El jugador " + args[1] + " no no existe"));
 							}
-						}
-						if (uwu == Bukkit.getServer().getOnlinePlayers().size()) {
-							sendex.sendMessage(prefix("&7El jugador " + args[1] + " no existe"));
-						}
-
-					}
-				} else {
+						}else {
 					ConsoleCommandSender sendex = Bukkit.getConsoleSender();
-						int uwu = 0;
-						for (Player all : Bukkit.getServer().getOnlinePlayers()) {
-							if (args[1].equals(all.getPlayer().getName().toString())) {
-								if (conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + "isjailed").equalsIgnoreCase("true")) {
-									String bas64 = conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + ".inventory.inv");
-									String bas642 = conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + ".inventory.arm");
+						//te recordare UwU
+						try {
+								Player player = Bukkit.getPlayer(args[1]);
+								if (conf.getString("config.data.playerdata." + player.getName() + ".isjailed").equalsIgnoreCase("true")) {
+									String bas64 = conf.getString("config.data.playerdata." + player.getName() + ".inventory.inv");
+									String bas642 = conf.getString("config.data.playerdata." + player.getName() + ".inventory.arm");
 									ItemStack[] i = itemStackArrayFromBase64(bas64);
-									all.getInventory().setContents(i);
+									player.getInventory().setContents(i);
 									ItemStack[] e = itemStackArrayFromBase64(bas642);
-									all.getInventory().setArmorContents(e);
-									all.sendMessage(prefix("&7Has sido liberado"));
-									conf.set("config.data.playerdata." + all.getPlayer().getName().toString() + "isjailed", "false");
+									player.getInventory().setArmorContents(e);
+									player.sendMessage(prefix("&7Has sido liberado"));
+									conf.set("config.data.playerdata." + player.getPlayer().getName().toString() + "isjailed", "false");
 									saveConfig();
-									break;
 								} else {
-									sendex.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no esta encarcelado"));
-									break;
+									sendex.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no esta encarcelado"));
 								}
-							} else {
-								uwu++;
-							}
+						}catch(Exception e) {
+							sendex.sendMessage(prefix("&7El jugador " + args[1] + " no no existe"));
 						}
-						if (uwu == Bukkit.getServer().getOnlinePlayers().size()) {
-							sendex.sendMessage(prefix("&7El jugador " + args[1] + " no existe"));
-						}
-
-					
 				}
 			}
-
 			else if (args[0].equalsIgnoreCase("claim")){
 				if (sender instanceof Player) {
 					Player sendex = (Player) sender;
 					if (sendex.hasPermission("smj.claim") || sendex.hasPermission("*") || sendex.isOp()) {
-						int uwu = 0;
-						for (Player all : Bukkit.getServer().getOnlinePlayers()) {
-							if (args[1].equals(all.getPlayer().getName().toString())) {
-								if (conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + "isjailed").equalsIgnoreCase("true")) {
+						try {
+							Player player = Bukkit.getPlayer(args[1]);
+								if (conf.getString("config.data.playerdata." + player.getPlayer().getName().toString() + "isjailed").equalsIgnoreCase("true")) {
 									//contar objetos
 									boolean success = true;
-									int diamond_ore = getamount(all.getInventory(), Material.DIAMOND_ORE);
-									int gold_ore = getamount(all.getInventory(), Material.GOLD_ORE);
-									int iron_ore = getamount(all.getInventory(), Material.IRON_ORE);
-									int coal_ore = getamount(all.getInventory(), Material.COAL_ORE);
-									int redstone_ore = getamount(all.getInventory(), Material.REDSTONE_ORE);
-									int lapis_ore = getamount(all.getInventory(), Material.LAPIS_ORE);
-									int emerald_ore = getamount(all.getInventory(), Material.EMERALD_ORE);
-									int quartz_ore = getamount(all.getInventory(), Material.NETHER_QUARTZ_ORE);
-									int nether_gold_ore = getamount(all.getInventory(), Material.NETHER_GOLD_ORE);
+									int diamond_ore = getamount(player.getInventory(), Material.DIAMOND_ORE);
+									int gold_ore = getamount(player.getInventory(), Material.GOLD_ORE);
+									int iron_ore = getamount(player.getInventory(), Material.IRON_ORE);
+									int coal_ore = getamount(player.getInventory(), Material.COAL_ORE);
+									int redstone_ore = getamount(player.getInventory(), Material.REDSTONE_ORE);
+									int lapis_ore = getamount(player.getInventory(), Material.LAPIS_ORE);
+									int emerald_ore = getamount(player.getInventory(), Material.EMERALD_ORE);
+									int quartz_ore = getamount(player.getInventory(), Material.NETHER_QUARTZ_ORE);
+									int nether_gold_ore = getamount(player.getInventory(), Material.NETHER_GOLD_ORE);
 									
-									if(conf.getInt("config.price.diamond_ore") != diamond_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de diamantes necesarios"));
+									if(conf.getInt("config.price.diamond_ore") != diamond_ore || conf.getInt("config.price.diamond_ore") <= diamond_ore){
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de diamantes necesarios"));
 										success = false;
 									}
-									if(conf.getInt("config.price.gold_ore") != gold_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de oro necesarios"));
+									if(conf.getInt("config.price.gold_ore") != gold_ore || conf.getInt("config.price.gold_ore") <= gold_ore){
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de oro necesarios"));
 										success = false;
 									}
-									if(conf.getInt("config.price.iron_ore") != iron_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de hierro necesarios"));
+									if(conf.getInt("config.price.iron_ore") != iron_ore || conf.getInt("config.price.iron_ore") <= iron_ore){
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de hierro necesarios"));
 										success = false;
 									}
-									if(conf.getInt("config.price.coal_ore") != coal_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de carbones necesarios"));
+									if(conf.getInt("config.price.coal_ore") != coal_ore || conf.getInt("config.price.coal_ore") <= coal_ore){
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de carbones necesarios"));
 										success = false;
 									}
-									if(conf.getInt("config.price.redstone_ore") != redstone_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de redstone necesarios"));
+									if(conf.getInt("config.price.redstone_ore") != redstone_ore || conf.getInt("config.price.redstone_ore") <= redstone_ore){
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de redstone necesarios"));
 										success = false;
 									}
-									if(conf.getInt("config.price.lapis_ore") != lapis_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de lapis necesarios"));
+									if(conf.getInt("config.price.lapis_ore") != lapis_ore || conf.getInt("config.price.lapis_ore") <= lapis_ore){
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de lapis necesarios"));
 										success = false;
 									}
-									if(conf.getInt("config.price.emerald_ore") != emerald_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de emeralds necesarios"));
+									if(conf.getInt("config.price.emerald_ore") != emerald_ore || conf.getInt("config.price.emerald_ore") <= emerald_ore){
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de emeralds necesarios"));
 										success = false;
 									}
-									if(conf.getInt("config.price.quartz_ore") != quartz_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de quartz necesarios"));
+									if(conf.getInt("config.price.quartz_ore") != quartz_ore || conf.getInt("config.price.quartz_ore") <= quartz_ore){
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de quartz necesarios"));
 										success = false;
 									}
-									if(conf.getInt("config.price.nether_gold_ore") != nether_gold_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de nether gold necesarios"));
+									if(conf.getInt("config.price.nether_gold_ore") != nether_gold_ore || conf.getInt("config.price.nether_gold_ore") <= nether_gold_ore){
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de nether gold necesarios"));
 										success = false;
 									}
 
 									if(success != false){
-										all.sendMessage(prefix("&7Perfecto tienes todos los minerales requeridos puedes salir"));
-										conf.set("config.data.playerdata." + all.getPlayer().getName().toString() + "isjailed", "false");
+										player.sendMessage(prefix("&7Perfecto tienes todos los minerales requeridos puedes salir"));
+										conf.set("config.data.playerdata." + player.getPlayer().getName().toString() + "isjailed", "false");
 										saveConfig();
-										String bas64 = conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + ".inventory.inv");
-										String bas642 = conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + ".inventory.arm");
+										String bas64 = conf.getString("config.data.playerdata." + player.getPlayer().getName().toString() + ".inventory.inv");
+										String bas642 = conf.getString("config.data.playerdata." + player.getPlayer().getName().toString() + ".inventory.arm");
 										ItemStack[] i = itemStackArrayFromBase64(bas64);
-										all.getInventory().setContents(i);
+										player.getInventory().setContents(i);
 										ItemStack[] e = itemStackArrayFromBase64(bas642);
-										all.getInventory().setArmorContents(e);
-										all.sendMessage(prefix("&7Has sido liberado"));
+										player.getInventory().setArmorContents(e);
+										player.sendMessage(prefix("&7Has sido liberado"));
 										return true;
 									}
 
 								} else {
-									sendex.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no esta encarcelado"));
+									sendex.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no esta encarcelado"));
 									return true;
 								}
-							} else {
-								uwu++;
-							}
-						}
-						if (uwu == Bukkit.getServer().getOnlinePlayers().size()) {
-							sendex.sendMessage(prefix("&7El jugador " + args[1] + " no existe"));
-							return true;
-						}
+						} catch (Exception e) {sendex.sendMessage(prefix("&7Ah ocurrido un error : " + e));}
 					}
 				} else {
 					ConsoleCommandSender sendex = Bukkit.getConsoleSender();
-						int uwu = 0;
-						for (Player all : Bukkit.getServer().getOnlinePlayers()) {
-							if (args[1].equals(all.getPlayer().getName().toString())) {
-								if (conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + "isjailed").equalsIgnoreCase("true")) {
+					try {
+						Player player = Bukkit.getPlayer(args[1]);
+								if (conf.getString("config.data.playerdata." + player.getPlayer().getName().toString() + "isjailed").equalsIgnoreCase("true")) {
 									//contar objetos
 									boolean success = true;
-									int diamond_ore = getamount(all.getInventory(), Material.DIAMOND_ORE);
-									int gold_ore = getamount(all.getInventory(), Material.GOLD_ORE);
-									int iron_ore = getamount(all.getInventory(), Material.IRON_ORE);
-									int coal_ore = getamount(all.getInventory(), Material.COAL_ORE);
-									int redstone_ore = getamount(all.getInventory(), Material.REDSTONE_ORE);
-									int lapis_ore = getamount(all.getInventory(), Material.LAPIS_ORE);
-									int emerald_ore = getamount(all.getInventory(), Material.EMERALD_ORE);
-									int quartz_ore = getamount(all.getInventory(), Material.NETHER_QUARTZ_ORE);
-									int nether_gold_ore = getamount(all.getInventory(), Material.NETHER_GOLD_ORE);
+									int diamond_ore = getamount(player.getInventory(), Material.DIAMOND_ORE);
+									int gold_ore = getamount(player.getInventory(), Material.GOLD_ORE);
+									int iron_ore = getamount(player.getInventory(), Material.IRON_ORE);
+									int coal_ore = getamount(player.getInventory(), Material.COAL_ORE);
+									int redstone_ore = getamount(player.getInventory(), Material.REDSTONE_ORE);
+									int lapis_ore = getamount(player.getInventory(), Material.LAPIS_ORE);
+									int emerald_ore = getamount(player.getInventory(), Material.EMERALD_ORE);
+									int quartz_ore = getamount(player.getInventory(), Material.NETHER_QUARTZ_ORE);
+									int nether_gold_ore = getamount(player.getInventory(), Material.NETHER_GOLD_ORE);
 									
 									if(conf.getInt("config.price.diamond_ore") != diamond_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de diamantes necesarios"));
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de diamantes necesarios"));
 										success = false;
 									}
 									if(conf.getInt("config.price.gold_ore") != gold_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de oro necesarios"));
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de oro necesarios"));
 										success = false;
 									}
 									if(conf.getInt("config.price.iron_ore") != iron_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de hierro necesarios"));
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de hierro necesarios"));
 										success = false;
 									}
 									if(conf.getInt("config.price.coal_ore") != coal_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de carbones necesarios"));
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de carbones necesarios"));
 										success = false;
 									}
 									if(conf.getInt("config.price.redstone_ore") != redstone_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de redstone necesarios"));
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de redstone necesarios"));
 										success = false;
 									}
 									if(conf.getInt("config.price.lapis_ore") != lapis_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de lapis necesarios"));
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de lapis necesarios"));
 										success = false;
 									}
 									if(conf.getInt("config.price.emerald_ore") != emerald_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de emeralds necesarios"));
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de emeralds necesarios"));
 										success = false;
 									}
 									if(conf.getInt("config.price.quartz_ore") != quartz_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de quartz necesarios"));
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de quartz necesarios"));
 										success = false;
 									}
 									if(conf.getInt("config.price.nether_gold_ore") != nether_gold_ore){
-										all.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no tiene el numero de nether gold necesarios"));
+										player.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no tiene el numero de nether gold necesarios"));
 										success = false;
 									}
 
 									if(success != false){
-										all.sendMessage(prefix("&7Perfecto tienes todos los minerales requeridos puedes salir"));
-										conf.set("config.data.playerdata." + all.getPlayer().getName().toString() + "isjailed", "false");
+										player.sendMessage(prefix("&7Perfecto tienes todos los minerales requeridos puedes salir"));
+										conf.set("config.data.playerdata." + player.getPlayer().getName().toString() + "isjailed", "false");
 										saveConfig();
-										String bas64 = conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + ".inventory.inv");
-										String bas642 = conf.getString("config.data.playerdata." + all.getPlayer().getName().toString() + ".inventory.arm");
+										String bas64 = conf.getString("config.data.playerdata." + player.getPlayer().getName().toString() + ".inventory.inv");
+										String bas642 = conf.getString("config.data.playerdata." + player.getPlayer().getName().toString() + ".inventory.arm");
 										ItemStack[] i = itemStackArrayFromBase64(bas64);
-										all.getInventory().setContents(i);
+										player.getInventory().setContents(i);
 										ItemStack[] e = itemStackArrayFromBase64(bas642);
-										all.getInventory().setArmorContents(e);
-										all.sendMessage(prefix("&7Has sido liberado"));
+										player.getInventory().setArmorContents(e);
+										player.sendMessage(prefix("&7Has sido liberado"));
 										return true;
 									}
 
 								} else {
-									sendex.sendMessage(prefix("&7El jugador " + all.getPlayer().getName().toString() + " no esta encarcelado"));
-									return true;
-								}
-							} else {
-								uwu++;
-							}
-						}
-						if (uwu == Bukkit.getServer().getOnlinePlayers().size()) {
-							sendex.sendMessage(prefix("&7El jugador " + args[1] + " no existe"));
-							return true;
-						}
-					}
+									sendex.sendMessage(prefix("&7El jugador " + player.getPlayer().getName().toString() + " no esta encarcelado"));
+									return true;}
+					} catch (Exception e) {sendex.sendMessage(prefix("&7Ah ocurrido un error : " + e));}
 				}
-			
+			}
 		} catch (Exception e) {
 
 			if (sender instanceof Player) {
@@ -428,8 +384,8 @@ public class SimpleMineJail extends JavaPlugin implements TabExecutor {
 
 		if (args.length == 2) {
 			List<String> list = new ArrayList<>();
-			for (Player all : Bukkit.getServer().getOnlinePlayers()) {
-				list.add(all.getName());
+			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+				list.add(player.getName());
 			}
 
 			if (list != null)
